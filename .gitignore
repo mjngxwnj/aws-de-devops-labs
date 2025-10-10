@@ -1,0 +1,7 @@
+#ignore folder
+data/
+de-devops-lab
+
+#ignore file
+.env
+
