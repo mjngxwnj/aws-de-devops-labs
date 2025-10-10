@@ -1,6 +1,7 @@
 #ignore folder
 data/
-de-devops-lab
+de-devops-lab/
+__pycache__/
 
 #ignore file
 .env

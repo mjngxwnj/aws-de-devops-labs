@@ -1,41 +1,17 @@
 import os
 from pathlib import Path
-
-import boto3
-from dotenv import load_dotenv
-
-
-#load env
-load_dotenv()
-
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-
-
-#get variables
-AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
-AWS_DEFAULT_REGION = os.getenv("AWS_DEFAULT_REGION")
-
-
-#S3 client
-s3_client = boto3.client(
-    "s3",
-    aws_access_key_id = AWS_ACCESS_KEY_ID,
-    aws_secret_access_key = AWS_SECRET_ACCESS_KEY,
-    region_name = AWS_DEFAULT_REGION
-)
-
+from aws_client import AWSClients
 
 #configuration
 BUCKET_NAME = "huynhthuan-bucket-test"
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 LOCAL_INPUT_FILE_PATH = PROJECT_ROOT / "data" / "input" / "test.txt"
 LOCAL_OUTPUT_FILE_PATH = PROJECT_ROOT / "data" / "output" / "test.txt"
 S3_KEY = "test.txt"
 
 
 #function to upload file
-def upload_to_S3(local_input_file_path: Path, bucket_name: str, s3_key: str, client = s3_client):
+def upload_to_S3(local_input_file_path: Path, bucket_name: str, s3_key: str, client):
     """
     Upload a local file to S3.
 
@@ -60,7 +36,7 @@ def upload_to_S3(local_input_file_path: Path, bucket_name: str, s3_key: str, cli
 
 
 #function to download file
-def download_from_s3(bucket_name: str, s3_key: str, local_output_file_path: Path, client = s3_client):
+def download_from_s3(bucket_name: str, s3_key: str, local_output_file_path: Path, client):
     """
     Download a file from S3 bucket to local path.
 
@@ -81,10 +57,11 @@ def download_from_s3(bucket_name: str, s3_key: str, local_output_file_path: Path
 
 
 if __name__ == "__main__":
-    upload_to_S3(LOCAL_INPUT_FILE_PATH, BUCKET_NAME, S3_KEY)
-    download_from_s3(BUCKET_NAME, S3_KEY, LOCAL_OUTPUT_FILE_PATH)
+    #initialize AWS client manager
+    aws = AWSClients()
 
+    #get S3 client with default region
+    s3_client = aws.get_client("s3")
 
-
-
-
+    upload_to_S3(LOCAL_INPUT_FILE_PATH, BUCKET_NAME, S3_KEY, s3_client)
+    download_from_s3(BUCKET_NAME, S3_KEY, LOCAL_OUTPUT_FILE_PATH, s3_client)
