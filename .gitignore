@@ -1,8 +1,17 @@
-#ignore folder
+#data
 data/
+
+#venv
 de-devops-lab/
+
+#pycache
 __pycache__/
 
-#ignore file
+#terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+#env
 .env
 
