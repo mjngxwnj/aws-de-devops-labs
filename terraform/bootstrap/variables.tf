@@ -13,3 +13,8 @@ variable "dynamodb_table_name" {
   description = "Name of the DynamoDB table for state locking (huynhthuan + dynamodbname)"
   type        = string
 }
+
+variable "project" {
+  description = "The project name to use for unique resource naming"
+  type        = string
+}
