@@ -12,6 +12,9 @@ on:
 jobs:
   bootstrap:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     env:
       TF_WORKING_DIR: terraform/bootstrap
 
