@@ -1,24 +1,23 @@
 # --------------------------------------------------------------------------------------------------------
-# Terraform Bootstrap Workflow
+# Terraform CI/CD Workflow - Environment: Dev
 # --------------------------------------------------------------------------------------------------------
-# Purpose : Bootstraps core infrastructure required for Terraform (S3 backend bucket, DynamoDB lock table)
+# Purpose : Deploys & manages development infrastructure using Terraform with remote backend (S3 + DynamoDB)
 # Trigger : Manual only (workflow_dispatch)
-# Notes   : This worklow will be executed once per environment before running other Terraform pipelines.
 # --------------------------------------------------------------------------------------------------------
 
-name: Terraform Bootstrap
+name: Terraform Dev
 
 on:
-  workflow_dispatch: #run manually
+  workflow_dispatch:
 
 jobs:
-  bootstrap:
+  terraform-dev:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
     env:
-      TF_WORKING_DIR: terraform/bootstrap
+      TF_WORKING_DIR: terraform/environments/dev
 
     steps:
       - name: Checkout repository
@@ -35,9 +34,9 @@ jobs:
         with:
           terraform_version: 1.8.5
 
-      - name: Terraform Init (with no backend)
+      - name: Terraform Init
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform init -backend=false
+        run: terraform init -backend-config=backend.hcl
 
       - name: Terraform Validate
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -45,7 +44,7 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform plan -out=tfplan
+        run: terraform plan -var-file=dev.tfvars -out=tfplan
 
       - name: Terraform Apply
         working-directory: ${{ env.TF_WORKING_DIR }}
