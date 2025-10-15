@@ -1,17 +1,17 @@
-# --------------------------------------------------------------------------------------------------------
-# Terraform CI/CD Workflow - Environment: Dev
-# --------------------------------------------------------------------------------------------------------
-# Purpose : Deploys & manages development infrastructure using Terraform with remote backend (S3 + DynamoDB)
-# Trigger : Manual only (workflow_dispatch)
-# --------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+# Terraform Destroy Workflow - Environment: Dev
+# -------------------------------------------------------------------------------
+# Purpose : Manually destroy Dev environment infrastructure managed by Terraform
+# Trigger : Manual (workflow_dispatch) + optional approval
+# -------------------------------------------------------------------------------
 
-name: Terraform Dev
+name: Terraform Destroy (Dev)
 
 on:
   workflow_dispatch:
 
 jobs:
-  terraform-dev:
+  terraform-destroy-dev:
     runs-on: ubuntu-latest
     environment: dev
     permissions:
@@ -39,14 +39,10 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init -backend-config=backend.hcl
 
-      - name: Terraform Validate
+      - name: Terraform Refresh
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform validate
+        run: terraform apply -refresh-only -auto-aprove
 
-      - name: Terraform Plan
+      - name: Terraform Destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform plan -var-file=dev.tfvars -out=tfplan
-
-      - name: Terraform Apply
-        working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform apply -auto-approve tfplan
+        run: terraform destroy -var-file=dev.tfvars -auto-aprove
