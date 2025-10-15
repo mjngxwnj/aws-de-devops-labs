@@ -41,8 +41,8 @@ jobs:
 
       - name: Terraform Refresh
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform apply -refresh-only -auto-aprove
+        run: terraform apply -refresh-only -auto-approve
 
       - name: Terraform Destroy
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform destroy -var-file=dev.tfvars -auto-aprove
+        run: terraform destroy -var-file=dev.tfvars -auto-approve
